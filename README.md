@@ -35,155 +35,138 @@ To design and simulate a 4:1 Multiplexer (MUX) using Verilog HDL in four differe
 
 ### 4:1 MUX Gate-Level Implementation
 ```verilog
-// Gate Level Modelling - Skeleton
-module mux4_gate (
-    input  wire I0, I1, I2, I3,
-    input  wire S0, S1,
-    output wire Y
-);
-    // Declare internal wires
-
-    // Write NOT gates
-
-    // Write AND gates
-
-    // Write OR gate
-
+module mux41(I,S,Y);
+input [3:0]I;
+input [1:0]S;
+output Y;
+wire [3:0]w;
+and (w[0], I[0], ~S[1], ~S[0]); 
+and (w[1], I[1], ~S[1], S[0]); 
+and (w[2], I[2], S[1], ~S[0]); 
+and (w[3], I[3], S[1], S[0]);  
+or (Y, w[0], w[1], w[2], w[3]);
 endmodule
-
 ```
 ### 4:1 MUX Gate-Level Implementation- Testbench
 ```verilog
-// Testbench Skeleton
-`timescale 1ns/1ps
-module tb_mux4_gate;
-
-    // Declare testbench signals
-    reg I0, I1, I2, I3;
-    reg S0, S1;
-    wire Y;
-
-    // Instantiate DUT
-    mux4_gate uut (
-        .I0(I0), .I1(I1), .I2(I2), .I3(I3),
-        .S0(S0), .S1(S1),
-        .Y(Y)
-    );
-
-    initial begin
-        // Initialize inputs
-
-        // Apply test cases
-
-        // Stop simulation
-        #10 $stop;
-    end
-
+module MUX_41_tb;
+reg [3:0]I;
+reg [1:0]S;
+wire Y;
+mux41 uut(I,S,Y);
+initial
+begin
+I=4'b1001;
+S=2'b00;
+#10;
+$display("selection is %b  %b ,output  : %b",S[1],S[0],Y);
+S=2'b01;
+#10;
+$display("selection is %b  %b ,output  : %b",S[1],S[0],Y);
+S=2'b10;
+#10;
+$display("selection is %b  %b ,output  : %b",S[1],S[0],Y);
+S=2'b11;
+#10;
+$display("selection is %b  %b ,output  : %b",S[1],S[0],Y);
+$finish;
+end
 endmodule
 ```
 ## Simulated Output Gate Level Modelling
-
-_______ Here Paste the Simulated output  ___________
+<img width="2880" height="1800" alt="Screenshot 2025-09-24 082812" src="https://github.com/user-attachments/assets/782ee401-69e9-4f45-a6d8-9f732e4c438a" />
 
 ---
 ### 4:1 MUX Data flow Modelling
 ```verilog
-// Dataflow Modelling - Skeleton
-module mux4_dataflow (
-    input  wire I0, I1, I2, I3,
-    input  wire S0, S1,
-    output wire Y
-);
-    // Write assign statement using operators
-
+module mux41(I, S, Y);
+input [3:0] I;     
+input [1:0] S;   
+output Y;        
+assign Y = (~S[1] & ~S[0] & I[0]) |
+             (~S[1] &  S[0] & I[1]) |
+             ( S[1] & ~S[0] & I[2]) |
+             ( S[1] &  S[0] & I[3]);
 endmodule
 
 ```
 ### 4:1 MUX Data flow Modelling- Testbench
 ```verilog
-// Testbench Skeleton
-`timescale 1ns/1ps
-module tb_mux4_dataflow;
-
-    // Declare testbench signals
-    reg I0, I1, I2, I3;
-    reg S0, S1;
-    wire Y;
-
-    // Instantiate DUT
-    mux4_dataflow uut (
-        .I0(I0), .I1(I1), .I2(I2), .I3(I3),
-        .S0(S0), .S1(S1),
-        .Y(Y)
-    );
-
-    initial begin
-        // Initialize inputs
-
-        // Apply test cases
-
-        // Stop simulation
-        #10 $stop;
-    end
-
+module MUX_41_tb;
+reg [3:0]I;
+reg [1:0]S;
+wire Y;
+mux41 uut(I,S,Y);
+initial
+begin
+I=4'b1001;
+S=2'b00;
+#10;
+$display("selection is %b  %b ,output  : %b",S[1],S[0],Y);
+S=2'b01;
+#10;
+$display("selection is %b  %b ,output  : %b",S[1],S[0],Y);
+S=2'b10;
+#10;
+$display("selection is %b  %b ,output  : %b",S[1],S[0],Y);
+S=2'b11;
+#10;
+$display("selection is %b  %b ,output  : %b",S[1],S[0],Y);
+$finish;
+end
 endmodule
 
 ```
 ## Simulated Output Dataflow Modelling
-
-_______ Here Paste the Simulated output  ___________
+<img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/6e0d8ab2-dc66-4a23-84a3-bcec3012f0ff" />
 
 ---
 ### 4:1 MUX Behavioral Implementation
 ```verilog
-module mux4_to_1_behavioral (
-    input wire A,
-    input wire B,
-    input wire C,
-    input wire D,
-    input wire S0,
-    input wire S1,
-    output reg Y
-);
-    always @(*) begin
-        
+`timescale 1ns / 1ps
+module MUX_41(I,S,Y);
+input [3:0]I;
+input [1:0]S;
+output reg Y;
+always @(I,S)
+    begin
+        case(S)
+        2'b00:Y=I[0];
+        2'b01:Y=I[1];
+        2'b10:Y=I[2];
+        2'b11:Y=I[3];
+        endcase
     end
 endmodule
 ```
 ### 4:1 MUX Behavioral Modelling- Testbench
 ```verilog
-// Testbench Skeleton
-`timescale 1ns/1ps
-module tb_mux4_behavioral;
-
-    // Declare testbench signals
-    reg I0, I1, I2, I3;
-    reg S0, S1;
-    wire Y;
-
-    // Instantiate DUT
-    mux4_behavioral uut (
-        .I0(I0), .I1(I1), .I2(I2), .I3(I3),
-        .S0(S0), .S1(S1),
-        .Y(Y)
-    );
-
-    initial begin
-        // Initialize inputs
-
-        // Apply test cases
-
-        // Stop simulation
-        #10 $stop;
-    end
-
+module MUX_41_tb;
+reg [3:0]I;
+reg [1:0]S;
+wire Y;
+MUX_41 uut(I,S,Y);
+initial
+begin
+I=4'b1001;
+S=2'b00;
+#10;
+$display("selection is %b  %b ,output  : %b",S[1],S[0],Y);
+S=2'b01;
+#10;
+$display("selection is %b  %b ,output  : %b",S[1],S[0],Y);
+S=2'b10;
+#10;
+$display("selection is %b  %b ,output  : %b",S[1],S[0],Y);
+S=2'b11;
+#10;
+$display("selection is %b  %b ,output  : %b",S[1],S[0],Y);
+$finish;
+end
 endmodule
-
 ```
 ## Simulated Output Behavioral Modelling
-
-_______ Here Paste the Simulated output  ___________
-
+<img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/a59f7f26-4533-421b-befc-d949f7254877" />
 
 ### 4:1 MUX Structural Implementation
 
@@ -191,54 +174,56 @@ _______ Here Paste the Simulated output  ___________
 
 
 ```verilog
-module mux2_to_1 (
-    input wire A,
-    input wire B,
-    input wire S,
-    output wire Y
-);
-    assign Y = S ? B : A;
+`timescale 1ns / 1ps
+module mux2to1(Y, I0, I1, S);
+  input I0, I1, S;
+  output Y;
+  wire w1, w2, w3;
+  not (w1, S);
+  and (w2, I0, w1);
+  and (w3, I1, S);
+  or  (Y, w2, w3);
+endmodule
+module mux4to1 (Y, I, S);
+  output Y;
+  input [3:0] I;
+  input [1:0] S;
+  wire w1, w2;
+  mux2to1 m1(w1, I[0], I[1], S[0]);
+  mux2to1 m2(w2, I[2], I[3], S[0]);
+  mux2to1 m3(Y, w1, w2, S[1]);
 endmodule
 
-module mux4_to_1_structural (
-    input wire A,
-    input wire B,
-    input wire C,
-    input wire D,
-    input wire S0,
-    input wire S1,
-    output wire Y
-);
-
-
-
-
-endmodule
 ```
 ### Testbench Implementation
 ```verilog
-`timescale 1ns / 1ps
 
-module mux4_to_1_tb;
-    reg A, B, C, D, S0, S1;
-    wire Y_gate, Y_dataflow, Y_behavioral, Y_structural;
-
-    
-
-    initial begin
-        A = 0; B = 0; C = 0; D = 0; S0 = 0; S1 = 0;
-
-      
-        #10 $stop;
-    end
-
-   
-    end
+module mux4to1_tb;
+reg [3:0]I;
+reg [1:0]S;
+wire Y;
+mux4to1 uut(Y,I,S);
+initial
+begin
+I=4'b0111;
+S=2'b00;
+#10;
+$display("selection is %b %b ,output : %b",S[1],S[0],Y);
+S=2'b01;
+#10; 
+$display("selection is %b %b ,output : %b",S[1],S[0],Y);
+S=2'b10;
+#10;
+$display("selection is %b %b ,output : %b",S[1],S[0],Y);
+S=2'b11;
+#10;
+$display("selection is %b %b ,output : %b",S[1],S[0],Y);
+$finish;
+end
 endmodule
 ```
 ## Simulated Output Structural Modelling
-
-_______ Here Paste the Simulated output  ___________
+<img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/0153004f-7ec8-4b23-a76b-ee143c0ac96d" />
 
 ---
 ### CONCLUSION
